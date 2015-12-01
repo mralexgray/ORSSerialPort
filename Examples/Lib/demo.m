@@ -10,10 +10,15 @@ int main() {
 
   @autoreleasepool {
 
-    id args = NSProcessInfo.processInfo.arguments;
+    id args = NSProcessInfo.processInfo.arguments, tty;
 
-    __unused char *x = [args count] > 0 ? getInfoForSerialUSB(args[1]) : NULL;
+    if (!(tty = [args count] > 0 ? args[1] : nil)) return 1;
+
+    char *x = getInfoForSerialUSB(tty) ?: NULL;
+
+    printf("%s has info %s",[tty UTF8String], x);
 
   }
+
   return 0;
 }
