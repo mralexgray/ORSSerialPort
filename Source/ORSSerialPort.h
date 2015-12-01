@@ -663,4 +663,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface ORSSerialPort (USBAttributes)
+
+@property (readonly,copy) NSDictionary *ioDeviceAttributes;
+@property (readonly,copy) NSNumber *vendorID, *productID;
+
+@end
+
 NS_ASSUME_NONNULL_END

@@ -1,0 +1,3 @@
+[submodule "Source/USBAttributes"]
+	path = Source/USBAttributes
+	url = https://gist.github.com/ca489ffda7edf757620a.git
