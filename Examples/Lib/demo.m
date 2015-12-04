@@ -1,22 +1,26 @@
 
 #import "usbserialquery.h"
 
-/*! YOU: edit arguments (in xcode), or manually pass your serial port,
+int USAGE () {
 
-    ie. /dev/tty.usbmodem935591
- */
+  const char * app = NSProcessInfo.processInfo.processName.UTF8String;
+
+  return fprintf(stderr, "USAGE: %s [port]"
+                         "  # by default will guess [port] or provide [port] explicitly like \"/dev/tty.usbmodem935591\" \n"
+                         "       %s --help"
+                         "  # show this text\n\n"
+                         "Note: If running in Xcode, add arguments in \"Scheme Settings...\\n", app, app), 1;
+}
 
 int main() {
 
   @autoreleasepool {
 
-    id args = NSProcessInfo.processInfo.arguments, tty;
+    id args = NSProcessInfo.processInfo.arguments, tty = [args count] > 1 ? args[1] : nil, info = nil;
 
-    if (!(tty = [args count] > 0 ? args[1] : nil)) return 1;
+    if ([args containsObject:@"--help"] || !(info = getInfoForSerialUSB(tty)) || !(info[kVID] && info[kPID])) return USAGE();
 
-    char *x = getInfoForSerialUSB(tty) ?: NULL;
-
-    printf("%s has info %s",[tty UTF8String], x);
+    printf("%s\n\nProduct ID: %s\nVendor ID: %s\n",[info[kUSB] UTF8String], [info[kVID] UTF8String], [info[kPID] UTF8String]);
 
   }
 

@@ -9,20 +9,32 @@
 #import "ORSSerialPort.h"
 #import "ORSSerialPortManager.h"
 
+#define kPID @"ProductID"
+#define kVID @"VendorID"
+#define kUSB @"BoardName"
 
-NS_INLINE char* getInfoForSerialUSB(id name) {
+NS_INLINE ORSSerialPort * guessPort(id hint) {
 
-  NSString * info = @"", *q = [name lastPathComponent].pathExtension;
+  NSString * port = hint ? [hint lastPathComponent].pathExtension : nil;
 
-  for (ORSSerialPort * obj in ORSSerialPortManager.sharedSerialPortManager.availablePorts) {
+  for (ORSSerialPort * obj in ORSSerialPortManager.sharedSerialPortManager.availablePorts)
 
-    if (![q isEqualToString:obj.name]) continue;
+  if ((!port && [obj.name rangeOfString:@"Bluetooth-Incoming-Port"].location == NSNotFound)
 
-    info = [NSString stringWithFormat:@"%08x_%08x\n", obj.vendorID.intValue, obj.productID.intValue];
+    || [port isEqualToString:obj.name]) return obj;
 
-    break;
-  }
-  return (char*)info.UTF8String;
+  return nil;
+}
+
+NS_INLINE NSDictionary * getInfoForSerialUSB(id name) {
+
+  ORSSerialPort *port = guessPort(name);
+
+  return !port ? nil : ({
+
+    @{  kUSB : port.name,
+        kVID : [NSString stringWithFormat:@"0x%04x", port.vendorID.intValue],
+        kPID : [NSString stringWithFormat:@"0x%04x", port.productID.intValue] }; });
 }
 
 
