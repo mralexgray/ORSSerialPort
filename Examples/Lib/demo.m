@@ -12,6 +12,10 @@ int USAGE () {
                          "Note: If running in Xcode, add arguments in \"Scheme Settings...\\n", app, app), 1;
 }
 
+
+ssize_t whatecver = 1;
+
+
 int main() {
 
   @autoreleasepool {
