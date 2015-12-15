@@ -32,13 +32,16 @@
 - (void)serialPort:(ORSSerialPort *)serialPort didReceivePacket:(NSData *)packetData matchingDescriptor:(ORSSerialPacketDescriptor *)descriptor
 {
 	NSString *dataAsString = [[NSString alloc] initWithData:packetData encoding:NSASCIIStringEncoding];
+//  NSLog(@"%@", dataAsString);
 	NSString *valueString = [dataAsString substringWithRange:NSMakeRange(4, [dataAsString length]-5)];
-	self.sliderPosition = [valueString integerValue];
+  printf("slider %ld\n", valueString.integerValue);
+	self.sliderPosition = valueString.integerValue;
 }
 
 - (void)serialPortWasOpened:(ORSSerialPort *)serialPort
 {
-	ORSSerialPacketDescriptor *descriptor = [[ORSSerialPacketDescriptor alloc] initWithPrefixString:@"!pos"
+	ORSSerialPacketDescriptor *descriptor =
+  [[ORSSerialPacketDescriptor alloc] initWithPrefixString:@"!pos"
 																					   suffixString:@";"
 																				maximumPacketLength:8
 																						   userInfo:nil];
@@ -49,16 +52,18 @@
 
 - (void)setSerialPort:(ORSSerialPort *)serialPort
 {
-	if (serialPort != _serialPort) {
-		[_serialPort close];
-		_serialPort.delegate = nil;
-		
-		_serialPort = serialPort;
-		
-		_serialPort.baudRate = @57600;
-		_serialPort.RTS = YES;
-		_serialPort.delegate = self;
-		[_serialPort open];
-	}
+	if (serialPort == _serialPort) return;
+
+  [_serialPort close];
+
+  _serialPort.delegate = nil;
+  
+  _serialPort = serialPort;
+  _serialPort.baudRate = @9600;
+  _serialPort.RTS = YES;
+  _serialPort.DTR = YES;
+  _serialPort.delegate = self;
+  [_serialPort open];
+
 }
 @end

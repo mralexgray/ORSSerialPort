@@ -28,3 +28,4 @@
 #import <ORSSerial/ORSSerialPortManager.h>
 #import <ORSSerial/ORSSerialRequest.h>
 #import <ORSSerial/ORSSerialPacketDescriptor.h>
+#import <ORSSerial/MM2200087.h>

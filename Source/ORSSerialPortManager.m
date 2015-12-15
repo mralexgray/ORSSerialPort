@@ -153,8 +153,7 @@ static ORSSerialPortManager *sharedInstance = nil;
 
 #pragma mark - Public Methods
 
-#pragma mark -
-#pragma Sleep/Wake Management
+#pragma mark - Sleep/Wake Management
 
 - (void)systemWillSleep:(NSNotification *)notification;
 {

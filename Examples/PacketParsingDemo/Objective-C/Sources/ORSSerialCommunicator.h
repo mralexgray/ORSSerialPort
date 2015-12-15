@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@class ORSSerialPort;;
+@class ORSSerialPort;
 
 @interface ORSSerialCommunicator : NSObject
 
-@property (nonatomic, strong) ORSSerialPort *serialPort;
+@property (nonatomic) ORSSerialPort *serialPort;
 
 @property (nonatomic, readonly) NSInteger sliderPosition;
 
