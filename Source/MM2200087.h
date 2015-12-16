@@ -1,5 +1,4 @@
 
-
 @import AtoZUniversal; @class SPrt ___ /*! USAGE:
 
   _meter = [MM2200087 meterOnPort:SERIALPORTS[1] onChange:^(id this){
@@ -15,41 +14,42 @@
 
 
 */
+	
+//    #define ☎ TEL      /// ERROR: Macro name must be an identifier.
+//#define ❌ NO
+//#define ⇧ UP
+//#define 〓 ==
+//#define 🍎 APPLE
 
-🆅 MultiMeter ___
-🆅 MeterWatcher
-_VD meterDidChange __Ｐ(MultiMeter) meter ___
+#define 💤 ZZZ      /// ERROR: Macro name must be an identifier.
+#define 👁 EYE
 
-￭
+
+//⌘ 🙉 MONKEY
+
+
+
 
 🆅 MultiMeter 🅥(NObj) @Optn
+_NC ＾ObjC onChange     ___
+_NA  _SPrt port         ___
 
-_RO _SInt decimalPlace ___
-_NC _OBlk onChange     ___
-_RO _List flags        ___
-_NA _SPrt port         ___
-_RO _Text display      ___
-_RO _IsIt updated      __
-          max          ___
+_RO  _SInt decimalPlace ___
+_RO  _List flags        ___
+_RO  _Text display      ___
 
-_VD run               ___
+- initOnPort __SPrt_ port onChange ＾ObjC_ onChange ___
+￭
 
-_PR Ｐ(MeterWatcher) watcher ___
+🅺 MM2200087 : NObj <MultiMeter>
 
 ￭
 
-🅺 MM2200087 : NSO <MultiMeter>
 
-+ _Kind_  meterOnPort __SPrt_ port onChange: _ObjBlk_ onChange ___
-
-￭
-
-#define kAUTO       @"AUTO"
-#define kNEGATIVE   @"MINUS"
-#define kLOWBATT    @"LOW BATTERY"
 #define kVOLTS      @"VOLTS"
 #define kAMPS       @"AMPS"
 #define kOHMS       @"OHMS"
+
 #define kLCD				@"lcd"
 #define kFLAGS   		@"flags"
 

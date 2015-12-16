@@ -2,51 +2,28 @@
 #import "MM2200087.h"
 #import "ORSSerialPort.h"
 
+#define kNEGATIVE   @"MINUS"				// 0001 | 1___      BYTE 1
+#define kAC					@"AC"						//			| _1__
+#define kAUTO       @"AUTO"					//		  | ___1
 
-@XtraPlan(Data,HexesAndBits)
+#define kCONTINUITY @"CONTINUITY"		// 0010 | X___      BYTE 2
+#define kDIODE      @"DIODE"        //	 	  | _X__
+#define kLOWBATT    @"LOW BATTERY"  //		  | __X_
+#define kHOLD       @"HOLD"					//			| ___X
 
-/// Outputs a nice array of 13/14  7-bit values to make a whole packet.
+#define kMAX				@"MAX"					// 0011 | X___      BYTE 3
 
-_ID bits {  const uint8_t *bytes = self.bytes ___
-
-  return [@(self.length) mapTimes:^id(_Numb i) { uint8_t byte = bytes[i.iV] ___
-
-    return [@7 mapTimes:^id(_Numb num) {
-
-      return ((byte >> num.iV) & 1) == 0 ? @"0" : @"1" ___
-
-    }].joined ___
-
-  }];
-
-}
-
-_TT hexadecimalString {
-
-  const unsigned char *dBuffer = (const unsigned char *)self.bytes ___
-
-  return dBuffer ? [@(self.length) mapTimes:^id(_Numb num) {
-
-    return $(@"%02lx" __  (unsigned long)dBuffer[num.intValue]) ___
-
-  }].joined : @"" ;
-}
-
-￭
-
-static id lastDisplay __ segmentD ___
+static id segmentD ___
 
 @KIND(MM2200087Packet,<MultiMeter>)
-_RC _Data data ___
+//_RC _Data data ___
 _RC _List bits ___
 ￭
 @Plan MM2200087Packet
 
 @synthesize decimalPlace = _decimalPlace __
                  display = _display __
-                 updated = _updated __
-                   flags = _flags __
-                     max = _max ___
+                   flags = _flags ___
 
 + _Void_ initialize {
 
@@ -56,13 +33,6 @@ _RC _List bits ___
                 @"0x01100111" : @"P" __  @"0x01101101" : @"2" __  @"0x01110000" : @"7" __ 
                 @"0x01111001" : @"3" __  @"0x01111011" : @"9" __  @"0x01111110" : @"0" __ 
                 @"0x01111111" : @"8"} ___
-}
-
-+ packetWithData __Data_ d { return [self.alloc initWithData _ d] ___ }
-
-- initWithData __Data_ d {
-
-  return self = [self initWithBits:d.bits] ? [self setValue:d.copy forKey _ @"data"] __ self _ nil ___
 }
 
 - initWithBits __List_ allBits { SUPERINIT ___
@@ -109,11 +79,11 @@ _RC _List bits ___
 
     _display = [@{ kLCD : joined, kFLAGS : _flags } jsonStringValue];
 
-    [lastDisplay isEqualToArray:_bits] ?: ({
+//    [lastDisplay isEqualToArray:_bits] ?: ({
 
-      lastDisplay = _bits.copy ___ _updated = YES ___ _Void_ nil ___
+//      lastDisplay = _bits.copy ___ _updated = YES ___ _Void_ nil ___
 
-    });
+//    });
 
     self ___
   }) ___
@@ -126,9 +96,9 @@ _RC _List bits ___
 
   NSAssert(rangeStart != 0, @"eek, range was %i for [digit: %lu", rangeStart, dig) ___
 
-  id bins = [_bits subarrayWithRange: _Rnge_ {rangeStart,2}] __
-      uno = [bins[0] letters] __ // substringFromIndex:4].letters,
-      dos = [bins[1] letters] ___ //rsubstringFromIndex:4].letters ___
+  id bins = [_bits subarrayWithRange __Rnge_ {rangeStart,2}] __
+      uno = [bins[0] letters] __
+      dos = [bins[1] letters] ___
 
   ![ uno[3] bV ] ?: ({ dig == 4 ? ({ _max = YES ___ }) : ({ _decimalPlace = 4 - dig ___ }); _Void_ nil ___ });
 
@@ -142,56 +112,52 @@ _RC _List bits ___
 
 ￭
 
+@XtraPlan(Data,HexesAndBits)
+
+_ID bits {  const uint8_t *bytes = self.bytes ___
+
+  return [@(self.length) mapTimes:^id(_Numb i) { uint8_t byte = bytes[i.iV] ___
+
+    return [@7 mapTimes:^id(_Numb num) {
+
+      return ((byte >> num.iV) & 1) == 0 ? @"0" : @"1" ___
+
+    }].joined ___
+
+  }];
+
+} // Outputs a nice array of 13/14  7-bit values to make a whole packet.
+
+_TT hexadecimalString {
+
+  const unsigned char *dBuffer = (const unsigned char *)self.bytes ___
+
+  return dBuffer ? [@(self.length) mapTimes:^id(_Numb num) {
+
+    return $(@"%02lx" __  (unsigned long)dBuffer[num.intValue]) ___
+
+  }].joined : @"" ;
+}
+
+￭
+
 @Kind MM2200087 () <ORSSerialPortDelegate>
+
 _NA mData incomingDataBuffer ___
-_NA MM2200087Packet *lastPacket;
+_NA MM2200087Packet *lastPacket ___
+
 ￭
 
 @Plan MM2200087 
 
-@synthesize onChange = _onChange, port = _port;
+@synthesize onChange = _onChange __ port = _port ___
 
-+ _Kind_ meterOnPort:(ORSSerialPort*)port onChange: _ObjBlk_ onChange {
+- initOnPort __SPrt_ port onChange ＾ObjC_ onChange { SUPERINIT ___
 
-  return [self.alloc initOnPort:port onChange:onChange];
+  _onChange = [onChange copy] ___
+	[self setPort:port]; ___
+	return self ___
 }
-//- init { SUPERINIT;
-
-//  _fifoPath = [NSString stringWithFormat:@"/tmp/%@", self.className].stringByStandardizingPath;
-//  int fileDescriptor = open(_fifoPath.UTF8String, O_RDWR); // Get a file descriptor for reading the pipe without blocking
-
-//  if (fileDescriptor == -1)
-//  return NSLog(@"Unable to get file descriptor for named pipe %@", inPath), nil;
-
-//  _handle = [NSFileHandle.alloc initWithFileDescriptor:fileDescriptor closeOnDealloc:NO];
-
-//  _syncQueue = dispatch_queue_create([NSStringFromClass([self class]) UTF8String], DISPATCH_QUEUE_SERIAL);
-//  _sourceGroup = dispatch_group_create();
-//
-//  return self;
-
-//}
-
-- initWithPrint { SUPERINIT;
-
-  _onChange = ^(id x) { printf("%s\n", [x description].UTF8String); };
-
-  return self;
-}
-
-- initOnPort:(ORSSerialPort*)port onChange: _ObjBlk_ onChange {
-
-  SUPERINIT;
-  _onChange = [onChange copy];
-//  [_runloop = NSRunLoop.currentRunLoop runMode:NSDefaultRunLoopMode
-//         beforeDate:[NSDate dateWithTimeIntervalSinceNow:2]];
-
-  self.port = port;
-  return self;
-}
-
-//_TT display { return lastPacket.display; }
-
 
 _VD setPort:(_SPrt)port {
 
@@ -205,71 +171,106 @@ _VD setPort:(_SPrt)port {
 
   _port.delegate = self;
 
-//  [NSThread detachNewThreadSelector:@selector(open) toTarget:_port withObject:nil];
-
-//  BOOL shouldKeepRunning = YES;        // global
-//  NSRunLoop *runLoop = NSRunLoop.currentRunLoop;
-//  [runLoop addPort:NSMachPort.port forMode:NSDefaultRunLoopMode]; // adding some input source, that is required for runLoop to runing
-//  while (shouldKeepRunning && [runLoop runMode:NSDefaultRunLoopMode beforeDate:NSDate.distantFuture]); // starting infinite loop which can be stopped by changing the shouldKeepRunning's value
   [_port open];
-//  [NSThread detachNewThreadSelector:@selector(run) toTarget:NSRunLoop.currentRunLoop withObject:nil];
-
-//  [NSOperationQueue.mainQueue addOperationWithBlock:^{
-
-//      [NSRunLoop.currentRunLoop run];
-//  }];
-
-//  }];
-  //
-
 }
-
 
 - forwardingTargetForSelector:(SEL)aSelector { return self.lastPacket; }
 
+- (void)serialPort:(ORSSerialPort*)port didReceiveData:(NSData *)data {
+
+	[_incomingDataBuffer  = _incomingDataBuffer ?: NSMutableData.new appendData:data];
+
+	if (![data.hexadecimalString isEqualToString:@"e0"]) return;
+
+	id bits = self.incomingDataBuffer.bits;
+	if (![_lastPacket.bits isEqualToArray:bits]) {
+
+		_lastPacket = [MM2200087Packet.alloc initWithBits:bits];
+
+		if (_onChange) _onChange(self);
+	}
+	//	if (self.lastPacket.updated &&
+
+	_incomingDataBuffer = nil;
+}
+
+_TT description {
+
+  return $(@"display:%@ ... flgs:[%@] ... decimal: %lu",
+    self.lastPacket.display, _lastPacket.flags.joinedWithSpaces, _lastPacket.decimalPlace) ___
+}
+
+@end
+
+/*
+
+//+ packetWithData __Data_ d { return [self.alloc initWithData _ d] ___ }
+
+//- initWithData __Data_ d {
+
+//  return self = [self initWithBits:d.bits] ? [self setValue:d.copy forKey _ @"data"] __ self _ nil ___
+//}
+
+
+_TT display { return lastPacket.display; }
+
+
+- init { SUPERINIT;
+
+  _fifoPath = [NSString stringWithFormat:@"/tmp/%@", self.className].stringByStandardizingPath;
+  int fileDescriptor = open(_fifoPath.UTF8String, O_RDWR); // Get a file descriptor for reading the pipe without blocking
+
+  if (fileDescriptor == -1)
+  return NSLog(@"Unable to get file descriptor for named pipe %@", inPath), nil;
+
+  _handle = [NSFileHandle.alloc initWithFileDescriptor:fileDescriptor closeOnDealloc:NO];
+
+  _syncQueue = dispatch_queue_create([NSStringFromClass([self class]) UTF8String], DISPATCH_QUEUE_SERIAL);
+  _sourceGroup = dispatch_group_create();
+
+  return self;
+
+}
+  [_runloop = NSRunLoop.currentRunLoop runMode:NSDefaultRunLoopMode
+         beforeDate:[NSDate dateWithTimeIntervalSinceNow:2]];
+
+
+  [NSThread detachNewThreadSelector:@selector(open) toTarget:_port withObject:nil];
+
+  BOOL shouldKeepRunning = YES;        // global
+  NSRunLoop *runLoop = NSRunLoop.currentRunLoop;
+  [runLoop addPort:NSMachPort.port forMode:NSDefaultRunLoopMode]; // adding some input source, that is required for runLoop to runing
+  while (shouldKeepRunning && [runLoop runMode:NSDefaultRunLoopMode beforeDate:NSDate.distantFuture]); // starting infinite loop which can be stopped by changing the shouldKeepRunning's value
+  [NSThread detachNewThreadSelector:@selector(run) toTarget:NSRunLoop.currentRunLoop withObject:nil];
+  [NSOperationQueue.mainQueue addOperationWithBlock:^{
+      [NSRunLoop.currentRunLoop run];
 
 - (void)serialPortWasRemovedFromSystem:(ORSSerialPort *)serialPort {
 
 
 }
-- (void)serialPort:(ORSSerialPort*)port didReceiveData:(NSData *)data {
 
 
-  if ([data.hexadecimalString isEqualToString:@"e0"]) {
+_RC _Text      display ___
+  _NC Blk onChange ___
+  _RO ORSSerialPort * port;
+_RO _SInt decimalPlace ___
+_RO _IsIt          max __
+               updated ___
+flags __
 
-    [_incomingDataBuffer  = _incomingDataBuffer ?: NSMutableData.new appendData:data];
-    printf("setting last packet");
-    self.lastPacket = [MM2200087Packet packetWithData:self.incomingDataBuffer];
-    if (self.lastPacket.updated && _onChange) _onChange(self);
-
-    _incomingDataBuffer = nil;
-  }
-  else {
-
-  //    [_incomingDataArray = _incomingDataArray addObject:x];
-    [_incomingDataBuffer  = _incomingDataBuffer ?: NSMutableData.new appendData:data];
-  }
-}
-
-_TT description {
-
-  return $(@"display:%@ ... updated:%@ ... flgs:[%@] ... decimal: %lu ... max: %@",
-    self.lastPacket.display, $B(_lastPacket.updated), _lastPacket.flags.joinedWithSpaces, _lastPacket.decimalPlace, $B(_lastPacket.max)) ___
-}
-
-@end
+INTERFACE(MM2200087Packet, NObj <MultiMeter>) packetWithData __Data_ d ___
+_RO NSRunLoop *runloop;
+_RO dispatch_queue_t syncQueue;
+_RO dispatch_group_t sourceGroup;
+_RO NSFileHandle *handle;
 
 
-//_RC _Text      display ___
-//  _NC Blk onChange ___
-//  _RO ORSSerialPort * port;
-//_RO _SInt decimalPlace ___
-//_RO _IsIt          max __
-//               updated ___
-//flags __
 
-//INTERFACE(MM2200087Packet, NObj <MultiMeter>) packetWithData __Data_ d ___
-//_RO NSRunLoop *runloop;
-//_RO dispatch_queue_t syncQueue;
-//_RO dispatch_group_t sourceGroup;
-//_RO NSFileHandle *handle;
+🆅 MultiMeter ___
+🆅 MeterWatcher
+_VD meterDidChange __Ｐ(MultiMeter) meter ___
+_PR Ｐ(MeterWatcher) watcher ___
+
+￭
+*/

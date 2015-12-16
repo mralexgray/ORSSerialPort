@@ -53,6 +53,7 @@
 		7B89A3501C1F66B2000ADD8D /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = index.js; path = ../Examples/JSMultiMeter/index.js; sourceTree = "<group>"; };
 		7B89A3511C1F66B2000ADD8D /* start.litcoffee */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = start.litcoffee; path = ../Examples/JSMultiMeter/start.litcoffee; sourceTree = "<group>"; };
 		7B90A75C1BC76CDC00D9144B /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; lineEnding = 0; name = "Mac-Framework.xcconfig"; path = "/Volumes/5T/ServiceData/AtoZ.framework/xcconfigs/Mac/Mac-Framework.xcconfig"; sourceTree = "<absolute>"; };
+		7BC495611C21BB08008E4416 /* 2200087-Serial-Protocol */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "2200087-Serial-Protocol"; path = "../Examples/JSMultiMeter/2200087-Serial-Protocol"; sourceTree = "<group>"; };
 		9D64D0E51B9CBC99009D1AEB /* ORSSerialBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORSSerialBuffer.h; sourceTree = "<group>"; };
 		9D64D0E61B9CBC99009D1AEB /* ORSSerialBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialBuffer.m; sourceTree = "<group>"; };
 		9D7472131B6D7767002D8B10 /* ORSSerialPort Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ORSSerialPort Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -137,6 +138,7 @@
 				7B89A34F1C1F66B1000ADD8D /* app.js */,
 				7B89A3501C1F66B2000ADD8D /* index.js */,
 				7B89A3511C1F66B2000ADD8D /* start.litcoffee */,
+				7BC495611C21BB08008E4416 /* 2200087-Serial-Protocol */,
 				7B53B8F91C18B69800540FCE /* MM2200087.h */,
 				7B53B8FA1C18B69800540FCE /* MM2200087.m */,
 				7B53B8FB1C18B69800540FCE /* USBAttributes */,
@@ -524,6 +526,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_CFLAGS = "-fextended-identifiers";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.openreelsoftware.$(PRODUCT_NAME:rfc1034identifier)";
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -542,6 +545,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_CFLAGS = "-fextended-identifiers";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.openreelsoftware.$(PRODUCT_NAME:rfc1034identifier)";
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -558,6 +562,7 @@
 				7B89A34D1C1F6564000ADD8D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9D74721E1B6D7767002D8B10 /* Build configuration list for PBXNativeTarget "ORSSerialPort Tests" */ = {
 			isa = XCConfigurationList;

@@ -1,29 +1,21 @@
+$ = require 'nodobjc'
+EventLoop = require 'nodobjc/examples/EventLoop'
 
-emitter = module.exports = (callback) ->
+EventLoop.initObjC $
 
-	$ = require 'nodobjc'
-	EventLoop = require 'nodobjc/examples/EventLoop'
+$.import 'Foundation'
+$.import '~/Library/Frameworks/ORSSerial.framework'
 
-	EventLoop.initObjC $
+evtLoop = new EventLoop()
+pool = $.NSAutoreleasePool 'new'
 
-	$.import 'Foundation'
-
-	evtLoop = new EventLoop()
-	pool = $.NSAutoreleasePool 'new'
-
-	$.import '~/Library/Frameworks/ORSSerial.framework'
-
-	# console.error($.MM2200087.getClass().methods())
-
-	p = $.ORSSerialPortManager('sharedSerialPortManager')('availablePorts')('firstObject')
-
-
-	signature = ['v',['?', '@']]
-	blockDecl = ((self, obj) -> callback(obj))
-
-	m = $.MM2200087 'meterOnPort', p, 'onChange', $ blockDecl, signature
-
-	evtLoop.start()
+module.exports = class Meter
+	@constructor: (@callback) ->
+		@port = $.ORSSerialPortManager('sharedSerialPortManager')('availablePorts')('firstObject')
+		signature = ['v',['?', '@']]
+		blockDecl = ((self, obj) -> @callback(obj))
+		@meter = $.MM2200087 'meterOnPort', p, 'onChange', $ blockDecl, signature
+		evtLoop.start()
 
 
 # m 'setPort', p
